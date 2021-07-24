@@ -1,16 +1,22 @@
 import java.util.HashMap;
+import java.util.Random;
+import java.util.ArrayList;
 
 public class MarkovChain
 {
     private HashMap<String, Integer> numToKey = new HashMap<>();
     private HashMap<String, Integer> occurences = new HashMap<>();
     private int keys = 13;
-    private String[] list;
     private double[][] probibs = new double[keys][keys];
     private String[] keyLetters = new String[]{"c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b", "rest"};
     
-    public MarkovChain(String[] letters)
+    public MarkovChain(ArrayList<String> song)
     {
+        String[] letters = new String[song.size()];
+        for(int i = 0; i < song.size(); i += 1)
+        {
+            letters[i] = song.get(i);
+        }
         for(int i = 0; i < keys; i += 1)
         {
             numToKey.put(keyLetters[i], i);
@@ -56,6 +62,22 @@ public class MarkovChain
         }
     }
 
+    public String getNext(String Start)
+    {
+        int i = 0;
+        double total = 0;
+        double target = new Random().nextDouble();
+        for(double val : probibs[numToKey.get(Start)])
+        {
+            total += val;
+            if(total >= target)
+            {
+                return keyLetters[i];
+            }  
+            i += 1;
+        }
+        return "rest";
+    }
     public String toString()
     {
         String theString = "";
@@ -69,10 +91,20 @@ public class MarkovChain
         }
         return theString;
     }
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
-        String[] myString = new String[]{"a", "b", "a", "b", "f", "c", "d", "e", "f", "g", "a", "c", "d","a", "d", "b", "f", "g"};
+        MidiReader myReader = new MidiReader();
+        ArrayList<String> myString = myReader.getNewSong("Birthday.mid");
+        //https://musiclab.chromeexperiments.com/Song-Maker/song/5176723736363008
+        // System.out.println(myString);
         MarkovChain myChain = new MarkovChain(myString);
+        // System.out.println(myChain);
         System.out.println(myChain);
+        String prev = myChain.getNext("f");
+        for(int i = 0; i < 100; i += 1)
+        {
+            System.out.print(prev + " ");
+            prev = myChain.getNext(prev);
+        }
     }
 }
