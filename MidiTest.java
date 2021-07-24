@@ -34,7 +34,7 @@ public class MidiTest {
                 if (message instanceof ShortMessage)
                 {
                     ShortMessage sm = (ShortMessage) message;
-                    System.out.print("Channel: " + sm.getChannel() + " ");
+                    //System.out.print("Channel: " + sm.getChannel() + " ");
 
                     if (sm.getCommand() == NOTE_ON)
                     {
@@ -43,17 +43,18 @@ public class MidiTest {
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
                         int velocity = sm.getData2();
-                        System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+                        System.out.println(noteName);
+                        //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
 
                     else if (sm.getCommand() == NOTE_OFF)
                     {
-                        int key = sm.getData1();
-                        int octave = (key / 12)-1;
-                        int note = key % 12;
-                        String noteName = NOTE_NAMES[note];
-                        int velocity = sm.getData2();
-                        System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+                        // int key = sm.getData1();
+                        // int octave = (key / 12)-1;
+                        // int note = key % 12;
+                        // String noteName = NOTE_NAMES[note];
+                        // int velocity = sm.getData2();
+                        // System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
 
                     else

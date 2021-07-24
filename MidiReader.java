@@ -1,5 +1,5 @@
 import java.io.File;
-
+import java.util.ArrayList;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -7,14 +7,20 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
-public class MidiReader {
-    public static final int NOTE_ON = 0x90;
-    public static final int NOTE_OFF = 0x80;
-    public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+public class MidiReader
+{
+    private int NOTE_ON = 0x90;
+    private String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
-    public static void main(String[] args) throws Exception
+    public MidiReader()
     {
-        Sequence sequence = MidiSystem.getSequence(new File("FurElise.mid"));
+        System.out.println("MidiReader Initialized!");
+    }
+
+    public ArrayList<String> getNewSong(String name) throws Exception
+    {
+        ArrayList<String> mySong = new ArrayList<String>();
+        Sequence sequence = MidiSystem.getSequence(new File(name));
         //https://www.geeksforgeeks.org/java-midi/
         //Track: It is a sequence of Midi events.
         //Sequence: It is a data structure containing multiple tracks and timing information.The sequencer takes in a sequence and plays it.  
@@ -41,11 +47,13 @@ public class MidiReader {
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
                         int velocity = sm.getData2();
-                        System.out.println(noteName);
+                        //System.out.println(noteName);
+                        mySong.add(noteName.toLowerCase());
                         //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
                 }
             }
         }
+        return mySong;
     }
 }
