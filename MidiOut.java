@@ -5,6 +5,8 @@ import java.util.Queue;
 import javax.sound.midi.*; // package for all midi classes
 public class MidiOut
 {
+    private int noteNum = 0;
+    private long timeOn = 0;
     HashMap<String, Integer> nameToNum = new HashMap<>();
     private String[] keyLetters = new String[]{"c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"};
     public MidiOut()
@@ -16,7 +18,7 @@ public class MidiOut
             note += 1;
         }
     }
-public void makeSong(Queue<String> mySong) 
+public void makeSong(Queue<Note> mySong) 
 {
     System.out.println("midifile begin ");
 	try
@@ -66,17 +68,29 @@ public void makeSong(Queue<String> mySong)
         me = new MidiEvent(mm,(long)0);
         t.add(me);
 
-        //****  note on - middle C  ****
-        mm = new ShortMessage();
-        mm.setMessage(0x90,0x3C,0x60);
-        me = new MidiEvent(mm,(long)1);
-        t.add(me);
+        for(int i = 0; i < mySong.size(); i += 1)
+        {
+            int divisor = 4;
+            int note = 0x5 + nameToNum.get(mySong.peek().getName());
+            
+            //****  note on - middle C  ****
+            mm = new ShortMessage();
+            mm.setMessage(0x90,note,0x60);
+            me = new MidiEvent(mm,(long)timeOn);
+            t.add(me);
 
-        //****  note off - middle C - 120 ticks later  ****
-        mm = new ShortMessage();
-        mm.setMessage(0x80,0x3C,0x40);
-        me = new MidiEvent(mm,(long)121);
-        t.add(me);
+            //****  note off - middle C - 120 ticks later  ****
+            mm = new ShortMessage();
+            mm.setMessage(0x80,note,0x40);
+            me = new MidiEvent(mm,(long)timeOn + mySong.peek().getDuration() * divisor);
+            t.add(me);
+
+            mySong.offer(mySong.poll());
+            timeOn += mySong.peek().getDuration() * divisor;
+            noteNum += 1;
+        }
+        
+        System.out.println(noteNum);
 
         //****  set end of track (meta event) 19 ticks later  ****
         mt = new MetaMessage();

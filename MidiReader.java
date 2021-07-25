@@ -17,9 +17,9 @@ public class MidiReader
         System.out.println("MidiReader Initialized!");
     }
 
-    public ArrayList<String> getNewSong(String name) throws Exception
+    public ArrayList<Note> getNewSong(String name) throws Exception
     {
-        ArrayList<String> mySong = new ArrayList<String>();
+        ArrayList<Note> mySong = new ArrayList<Note>();
         Sequence sequence = MidiSystem.getSequence(new File(name));
         //https://www.geeksforgeeks.org/java-midi/
         //Track: It is a sequence of Midi events.
@@ -27,6 +27,7 @@ public class MidiReader
         int trackNumber = 0;
         for(Track track : sequence.getTracks())
         {
+            
             trackNumber++;
             System.out.println("Track " + trackNumber + ": size = " + track.size());
             System.out.println();
@@ -42,13 +43,30 @@ public class MidiReader
 
                     if (sm.getCommand() == NOTE_ON)
                     {
+                        
+                        long Duration = event.getTick();
+
                         int key = sm.getData1();
                         int octave = (key / 12)-1;
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
                         int velocity = sm.getData2();
-                        //System.out.println(noteName);
-                        mySong.add(noteName.toLowerCase());
+                        //System.out.println(octave);
+                        if(mySong.size() > 0)
+                        {
+                            Note last = mySong.get(mySong.size()-1);
+                            last.setDuration(Duration - last.getDuration());
+                            System.out.println("Duration:" + (Duration - last.getDuration()));
+                            mySong.remove(mySong.get(mySong.size()-1));
+                            mySong.add(last);
+                            mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
+                        }
+                        else
+                        {
+                            System.out.println("ah");
+                            mySong.add(new Note(noteName.toLowerCase(), 1, octave));
+                        }
+                        
                         //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
                 }

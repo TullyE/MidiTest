@@ -1,4 +1,6 @@
 import java.util.HashMap;
+import java.util.*;
+import java.util.Queue;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -10,12 +12,17 @@ public class MarkovChain
     private double[][] probibs = new double[keys][keys];
     private String[] keyLetters = new String[]{"c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b", "rest"};
     
-    public MarkovChain(ArrayList<String> song)
+    public MarkovChain(ArrayList<Note> song)
+    {
+        noteChain(song);
+    }
+
+    public void noteChain(ArrayList<Note> song)
     {
         String[] letters = new String[song.size()];
         for(int i = 0; i < song.size(); i += 1)
         {
-            letters[i] = song.get(i);
+            letters[i] = song.get(i).getName();
         }
         for(int i = 0; i < keys; i += 1)
         {
@@ -94,17 +101,23 @@ public class MarkovChain
     public static void main(String[] args) throws Exception
     {
         MidiReader myReader = new MidiReader();
-        ArrayList<String> myString = myReader.getNewSong("Birthday.mid");
+        ArrayList<Note> myString = myReader.getNewSong("Birthday.mid");
         //https://musiclab.chromeexperiments.com/Song-Maker/song/5176723736363008
         // System.out.println(myString);
+        MidiOut output = new MidiOut();
+        Queue<Note> mySong = new LinkedList<Note>();
         MarkovChain myChain = new MarkovChain(myString);
         // System.out.println(myChain);
-        System.out.println(myChain);
-        String prev = myChain.getNext("f");
-        for(int i = 0; i < 100; i += 1)
+        //System.out.println(myChain);
+    
+        String Name = myChain.getNext("f");
+        Note prev = new Note(Name, 20, 3);
+        for(int i = 0; i < 15; i += 1)
         {
+            mySong.offer(new Note(prev.getName(), prev.getDuration(), prev.getOctave()));
             System.out.print(prev + " ");
-            prev = myChain.getNext(prev);
+            prev = new Note(myChain.getNext(prev.getName()), 20, 3);
         }
+        output.makeSong(mySong);
     }
 }
