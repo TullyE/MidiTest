@@ -56,14 +56,12 @@ public class MidiReader
                         {
                             Note last = mySong.get(mySong.size()-1);
                             last.setDuration(Duration - last.getDuration());
-                            System.out.println("Duration:" + (Duration - last.getDuration()));
                             mySong.remove(mySong.get(mySong.size()-1));
                             mySong.add(last);
                             mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
                         }
                         else
                         {
-                            System.out.println("ah");
                             mySong.add(new Note(noteName.toLowerCase(), 1, octave));
                         }
                         

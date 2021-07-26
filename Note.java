@@ -28,4 +28,13 @@ public class Note
     {
         this.noteDuration = _duration;
     }
+    public void setNote(String _noteName)
+    {
+        this.noteName = _noteName;
+    }
+
+    public void setOctave(int _octave)
+    {
+        this.noteOctave = _octave;
+    }
 }
