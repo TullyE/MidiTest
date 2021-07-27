@@ -29,8 +29,9 @@ public class MidiReader
         {
             
             trackNumber++;
-            System.out.println("Track " + trackNumber + ": size = " + track.size());
-            System.out.println();
+            //System.out.println("Track " + trackNumber + ": size = " + track.size());
+            //System.out.println();
+            long prevTick = 0L;
             for (int i=0; i < track.size(); i++)
             { 
                 MidiEvent event = track.get(i);
@@ -40,31 +41,33 @@ public class MidiReader
                 {
                     ShortMessage sm = (ShortMessage) message;
                     //System.out.print("Channel: " + sm.getChannel() + " ");
-
                     if (sm.getCommand() == NOTE_ON)
                     {
                         
-                        long Duration = event.getTick();
-
+                        long Duration = event.getTick() - prevTick;
+                        //System.out.println(event.getTick() + "-" + prevTick + "=" + Duration);
                         int key = sm.getData1();
                         int octave = (key / 12)-1;
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
                         int velocity = sm.getData2();
                         //System.out.println(octave);
-                        if(mySong.size() > 0)
-                        {
-                            Note last = mySong.get(mySong.size()-1);
-                            last.setDuration(Duration - last.getDuration());
-                            mySong.remove(mySong.get(mySong.size()-1));
-                            mySong.add(last);
-                            mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
-                        }
-                        else
-                        {
-                            mySong.add(new Note(noteName.toLowerCase(), 1, octave));
-                        }
-                        
+                        // if(mySong.size() > 0)
+                        // {
+                        //     Note last = mySong.get(mySong.size()-1);
+                        //     last.setDuration(Duration - last.getDuration());
+                        //     mySong.remove(mySong.get(mySong.size()-1));
+                        //     mySong.add(last);
+                        //     mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
+                        //     System.out.println(Duration-last.getDuration());
+                        // }
+                        // else
+                        // {
+                        mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
+                        //System.out.println(Duration);
+                        //}
+                        prevTick = event.getTick();
+                        //System.out.println(prevTick);
                         //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
                 }

@@ -37,4 +37,9 @@ public class Note
     {
         this.noteOctave = _octave;
     }
+
+    public String toString()
+    {
+        return this.getName().toUpperCase() + " Length: " + this.getDuration() + " Octave: " + this.getOctave();
+    }
 }

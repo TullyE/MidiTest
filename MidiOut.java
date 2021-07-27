@@ -73,8 +73,12 @@ public void makeSong(Queue<Note> mySong)
             int note = 0x5 + nameToNum.get(mySong.peek().getName());
             //int note = 0x5C;
             //Long dur = mySong.peek().getDuration();
-            Long dur = 20L;
-            
+            Long dur = mySong.peek().getDuration();
+            if (dur == 0)
+            {
+                mySong.offer(mySong.poll());
+                continue;
+            }
             // System.out.print("\nnote: " + mySong.peek().getName());
             // System.out.print(" duration: " + dur);
 
@@ -87,11 +91,11 @@ public void makeSong(Queue<Note> mySong)
             //****  note off - middle C - 120 ticks later  ****
             mm = new ShortMessage();
             mm.setMessage(0x80,note,0x40);
-            me = new MidiEvent(mm,(long)timeOn + dur * divisor);
+            me = new MidiEvent(mm,(long)timeOn + dur);
             t.add(me);
 
             mySong.offer(mySong.poll());
-            timeOn += dur * divisor;
+            timeOn += dur + 2;
         }
 
         //****  set end of track (meta event) 19 ticks later  ****
