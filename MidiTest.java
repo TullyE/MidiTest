@@ -39,10 +39,10 @@ public class MidiTest {
                     if (sm.getCommand() == NOTE_ON)
                     {
                         int key = sm.getData1();
-                        int octave = (key / 12)-1;
+                        // int octave = (key / 12)-1;
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
-                        int velocity = sm.getData2();
+                        // int velocity = sm.getData2();
                         System.out.println(noteName);
                         //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
