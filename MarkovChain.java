@@ -1,8 +1,10 @@
 import java.util.HashMap;
-import java.util.*;
-import java.util.Queue;
+import java.util.HashSet;
+// import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MarkovChain
 {
