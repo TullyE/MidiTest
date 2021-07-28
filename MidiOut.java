@@ -1,6 +1,8 @@
-import java.io.*;
-import java.util.*;
-import java.util.ArrayList;
+// import java.io.*;
+// import java.util.*;
+// import java.util.ArrayList;
+import java.io.File;
+import java.util.HashMap;
 import java.util.Queue;
 import javax.sound.midi.*; // package for all midi classes
 public class MidiOut
@@ -69,7 +71,6 @@ public void makeSong(Queue<Note> mySong, String SongName)
 
         for(int i = 0; i < mySong.size(); i += 1)
         {
-            int divisor = 4;
             int note = 0x5 + nameToNum.get(mySong.peek().getName());
             //int note = 0x5C;
             //Long dur = mySong.peek().getDuration();
