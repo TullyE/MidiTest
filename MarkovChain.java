@@ -224,44 +224,44 @@ public class MarkovChain
         return theString;
     }
     
-    public static void main(String[] args) throws Exception
-    {
-        //int Reader
-        MidiReader myReader = new MidiReader();
-        //make a noteArray of the notes from the song
-        ArrayList<Note> originalSong = myReader.getNewSong("FurElise.mid");
-        //https://musiclab.chromeexperiments.com/Song-Maker/song/5176723736363008
-        // System.out.println(myString);
-        //init Midi Maker
-        MidiOut output = new MidiOut();
+    // public static void main(String[] args) throws Exception
+    // {
+    //     //int Reader
+    //     MidiReader myReader = new MidiReader();
+    //     //make a noteArray of the notes from the song
+    //     ArrayList<Note> originalSong = myReader.getNewSong("FurElise.mid");
+    //     //https://musiclab.chromeexperiments.com/Song-Maker/song/5176723736363008
+    //     // System.out.println(myString);
+    //     //init Midi Maker
+    //     MidiOut output = new MidiOut();
 
-        //Create the Queue for my new song
-        Queue<Note> mySong = new LinkedList<Note>();
+    //     //Create the Queue for my new song
+    //     Queue<Note> mySong = new LinkedList<Note>();
 
-        //init the Markov chain
-        MarkovChain myChain = new MarkovChain(originalSong);
+    //     //init the Markov chain
+    //     MarkovChain myChain = new MarkovChain(originalSong);
 
-        mySong.offer(originalSong.get(originalSong.size()-1));
+    //     mySong.offer(originalSong.get(originalSong.size()-1));
 
-        //System.out.println(myChain);
-        for(int i = 0; i < 15; i += 1)
-        {
-            //AHHAHAHAHHA STUPID IT'S A QUEUE SO IT'S FIRST IN FIRST OUT NOT FIRST IN LAST OUT SO IT'S 
-            //ALWAYS oing to have the same peek value!
-            //System.out.print(" : " + mySong.peek().getName()); this alwasy prints the first in
-            Note noteToAdd = myChain.getNext(mySong.peek());
-            //System.out.print(noteToAdd.getName());
-            mySong.offer(noteToAdd);
-            //System.out.println(noteToAdd);
-        }
+    //     //System.out.println(myChain);
+    //     for(int i = 0; i < 15; i += 1)
+    //     {
+    //         //AHHAHAHAHHA STUPID IT'S A QUEUE SO IT'S FIRST IN FIRST OUT NOT FIRST IN LAST OUT SO IT'S 
+    //         //ALWAYS oing to have the same peek value!
+    //         //System.out.print(" : " + mySong.peek().getName()); this alwasy prints the first in
+    //         Note noteToAdd = myChain.getNext(mySong.peek());
+    //         //System.out.print(noteToAdd.getName());
+    //         mySong.offer(noteToAdd);
+    //         //System.out.println(noteToAdd);
+    //     }
         
-        for(int i = 0; i < mySong.size(); i +=1)
-        {
-            //System.out.print(" " + mySong.peek().getName());
-            //System.out.println(" " + mySong.peek().getDuration());
-            mySong.offer(mySong.poll());
-        }
+    //     for(int i = 0; i < mySong.size(); i +=1)
+    //     {
+    //         //System.out.print(" " + mySong.peek().getName());
+    //         //System.out.println(" " + mySong.peek().getDuration());
+    //         mySong.offer(mySong.poll());
+    //     }
 
-        output.makeSong(mySong, "mySickTitle");
-    }
+    //     output.makeSong(mySong, "mySickTitle");
+    // }
 }
