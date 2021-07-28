@@ -11,10 +11,12 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class HomepageMenu extends JPanel implements ActionListener
 {
-    private String selectedMidiFile = "none";
+    private String selectedMidiFile;
 
     private boolean selectFileError = false;
 
@@ -48,6 +50,24 @@ public class HomepageMenu extends JPanel implements ActionListener
     //File Name input text box
     private JTextField FileNameInputField = new JTextField(20);
     private JTextArea FileNameInputArea = new JTextArea(5, 20);
+
+    //MUSIC STUFF NOW!
+
+    //int Reader
+    MidiReader myReader; // = new MidiReader();
+
+    //make a noteArray of the notes from the song when the user selects from the list
+    ArrayList<Note> originalSong; //= myReader.getNewSong("FurElise.mid");
+
+    //init Midi Maker
+    MidiOut output; // = new MidiOut();
+
+    //Create the Queue for my new song
+    Queue<Note> mySong = new LinkedList<Note>();
+
+    //init the Markov chain
+    MarkovChain myChain; // = new MarkovChain(originalSong);
+    
     public HomepageMenu()
     {
         this.setLayout(new BorderLayout());
@@ -62,6 +82,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         midiFileNames = showFiles(dir.listFiles());
         midiFiles = new JComboBox(midiFileNames);
         midiFiles.setSelectedItem(midiFileNames.length-1);
+        selectedMidiFile = (String) midiFiles.getSelectedItem();
 
         
         FileNameInputArea.setEditable(false);
@@ -100,13 +121,62 @@ public class HomepageMenu extends JPanel implements ActionListener
         g2.drawImage(o, 0, 0, this);
     }
 
+    public void playFile(String FileName)
+    {
+        try
+        {
+            if(sequencer != null)
+            {
+                sequencer.stop();
+            }
+            sequencer = MidiSystem.getSequencer();
+            if(sequencer == null)
+            {
+                System.err.println("Sequencer device not supported");
+                return;
+            }
+            sequencer.open();
+            sequence = MidiSystem.getSequence(new File((System.getProperty("user.dir") + "/" + FileName)));
+            sequencer.setSequence(sequence);
+            sequencer.start();
+        }
+        catch(MidiUnavailableException | InvalidMidiDataException | IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
     private class PlayNewSongAction implements ActionListener
     {
         @Override
         public void actionPerformed(ActionEvent e)
         {
             System.out.println("PlayNewSong");
+            //get the original song 
+            myReader = new MidiReader();
+            // originalSong = myReader.getNewSong("FurElise.mid");
+            try
+            {
+                //System.out.println(selectedMidiFile);
+                originalSong = myReader.getNewSong(selectedMidiFile);
+            }
+            catch (Exception e1)
+            {
+                System.out.println(selectedMidiFile);
+                //e1.printStackTrace();
+            }
+            output = new MidiOut();
+            mySong = new LinkedList<Note>();
+            myChain = new MarkovChain(originalSong);
 
+            mySong.offer(originalSong.get(originalSong.size()-1));
+            for(int i = 0; i < 15; i += 1)
+            {
+                Note noteToAdd = myChain.getNext(mySong.peek());
+                mySong.offer(noteToAdd);
+            }
+            output.makeSong(mySong, "DefaultTitle");
+            playFile("DefaultTitle.mid");
         }
     }
 
@@ -117,27 +187,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         {
             System.out.println("PlayOriginalSong");
             //https://riptutorial.com/java/example/621/play-a-midi-file
-            try
-            {
-                if(sequencer != null)
-                {
-                    sequencer.stop();
-                }
-                sequencer = MidiSystem.getSequencer();
-                if(sequencer == null)
-                {
-                    System.err.println("Sequencer device not supported");
-                    return;
-                }
-                sequencer.open();
-                sequence = MidiSystem.getSequence(new File((System.getProperty("user.dir") + "/" + midiFiles.getSelectedItem())));
-                sequencer.setSequence(sequence);
-                sequencer.start();
-            }
-            catch(MidiUnavailableException | InvalidMidiDataException | IOException ex)
-            {
-                ex.printStackTrace();
-            }
+            playFile((String) midiFiles.getSelectedItem());
         }
     }
 
@@ -148,6 +198,8 @@ public class HomepageMenu extends JPanel implements ActionListener
         {
             System.out.print(FileNameInputField.getText());
             System.out.println("SaveNewSong");
+            MidiOut newOutput = new MidiOut();
+            newOutput.makeSong(mySong, FileNameInputField.getText());
         }
     }
 
