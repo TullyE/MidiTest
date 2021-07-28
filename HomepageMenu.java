@@ -4,6 +4,9 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -19,6 +22,7 @@ public class HomepageMenu extends JPanel implements ActionListener
     boolean transition = false;
 
 
+    //https://stackoverflow.com/questions/2544759/java-reading-images-and-displaying-as-an-imageicon
     //Play New Song Button
     private ImageIcon im = new ImageIcon(Toolkit.getDefaultToolkit().createImage("PlayNewSong.png"));
     private JButton PlayNewSong = new JButton(im);
@@ -49,6 +53,9 @@ public class HomepageMenu extends JPanel implements ActionListener
 
     //MUSIC STUFF NOW!
 
+    //Duration
+    private int customSongDuration = 500;
+
     //int Reader
     MidiReader myReader; // = new MidiReader();
 
@@ -63,6 +70,15 @@ public class HomepageMenu extends JPanel implements ActionListener
 
     //init the Markov chain
     MarkovChain myChain; // = new MarkovChain(originalSong);
+
+    //Slider Max
+    private int sliderMax = 1000;
+    private int sliderMin = 10;
+    private int sliderInit = 500;
+    private JSlider SongDurationSlider = new JSlider(JSlider.HORIZONTAL, sliderMin, sliderMax, sliderInit);
+    private int delay;
+    private Timer timer;
+    private boolean frozen = false;
     
     public HomepageMenu()
     {
@@ -80,7 +96,15 @@ public class HomepageMenu extends JPanel implements ActionListener
         midiFiles.setSelectedItem(midiFileNames.length-1);
         selectedMidiFile = (String) midiFiles.getSelectedItem();
 
-        
+        //https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/SliderDemoProject/src/components/SliderDemo.java
+        // SongDurationSlider.setMajorTickSpacing(4);
+        // SongDurationSlider.setMinorTickSpacing(1);
+        // SongDurationSlider.setPaintTicks(true);
+        // SongDurationSlider.setPaintLabels(true);
+        // Font font = new Font("Serif", Font.BOLD, 4);
+        // SongDurationSlider.setFont(font);
+
+
         FileNameInputArea.setEditable(false);
         
 
@@ -90,6 +114,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         midiFiles.addActionListener(new JComboBoxAction());
         StopSound.addActionListener(new StopSoundAction());
         FileNameInputField.addActionListener(new FileNameInputAction());
+        SongDurationSlider.addChangeListener(new DurationSliderAction());
 
         PlayNewSong.setBounds(425,425, 150, 150);
         PlayOriginalSong.setBounds(200,425, 150, 150);
@@ -97,6 +122,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         midiFiles.setBounds(200, 575, 150, 25);
         StopSound.setBounds(775, 780, 75, 75);
         FileNameInputField.setBounds(650, 575, 150, 25);
+        SongDurationSlider.setBounds(425, 580, 150, 25);
         
         this.add(PlayNewSong); 
         this.add(PlayOriginalSong);
@@ -105,6 +131,12 @@ public class HomepageMenu extends JPanel implements ActionListener
         this.add(StopSound);
         this.add(FileNameInputArea);
         this.add(FileNameInputField);
+        // this.add(sliderLabel);
+        this.add(SongDurationSlider);
+        
+        timer = new Timer(delay, this);
+        timer.setInitialDelay(delay * 7);
+        timer.setCoalesce(true);
         
     }
 
@@ -115,8 +147,12 @@ public class HomepageMenu extends JPanel implements ActionListener
         Toolkit t = Toolkit.getDefaultToolkit();
         Image o = t.getImage("Generative Music.png");
         g2.drawImage(o, 0, 0, this);
-    }
 
+        g2.setFont(new Font("Monospaced", Font.BOLD, 22));
+        g2.setColor(new Color(164, 164, 163));
+        g2.drawString("Duration: " + customSongDuration, 425, 620);
+    }
+    // https://riptutorial.com/java/example/621/play-a-midi-file
     public void playFile(String FileName)
     {
         try
@@ -166,7 +202,7 @@ public class HomepageMenu extends JPanel implements ActionListener
             myChain = new MarkovChain(originalSong);
 
             mySong.offer(originalSong.get(originalSong.size()-1));
-            for(int i = 0; i < 15; i += 1)
+            for(int i = 0; i < customSongDuration; i += 1)
             {
                 Note noteToAdd = myChain.getNext(mySong.peek());
                 mySong.offer(noteToAdd);
@@ -233,6 +269,23 @@ public class HomepageMenu extends JPanel implements ActionListener
             FileNameInputArea.setCaretPosition(FileNameInputArea.getDocument().getLength());
         }
     }
+
+    private class DurationSliderAction implements ChangeListener
+    {
+        @Override
+        public void stateChanged(ChangeEvent e)
+        {
+            JSlider source = (JSlider)e.getSource();
+            // if (!source.getValueIsAdjusting())
+            // {
+               System.out.println(source.getValue());
+               customSongDuration = source.getValue(); 
+               repaint();
+            //}
+        }
+    }
+
+
     @Override
     public void actionPerformed(ActionEvent e)
     {

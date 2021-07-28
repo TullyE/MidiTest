@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.HashSet;
+// import java.util.LinkedList;
 // import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -245,25 +246,25 @@ public class MarkovChain
 
     //     mySong.offer(originalSong.get(originalSong.size()-1));
 
-    //     //System.out.println(myChain);
-    //     for(int i = 0; i < 15; i += 1)
-    //     {
-    //         //AHHAHAHAHHA STUPID IT'S A QUEUE SO IT'S FIRST IN FIRST OUT NOT FIRST IN LAST OUT SO IT'S 
-    //         //ALWAYS oing to have the same peek value!
-    //         //System.out.print(" : " + mySong.peek().getName()); this alwasy prints the first in
-    //         Note noteToAdd = myChain.getNext(mySong.peek());
-    //         //System.out.print(noteToAdd.getName());
-    //         mySong.offer(noteToAdd);
-    //         //System.out.println(noteToAdd);
-    //     }
+    //     System.out.println(myChain);
+        // for(int i = 0; i < 15; i += 1)
+        // {
+        //     //AHHAHAHAHHA STUPID IT'S A QUEUE SO IT'S FIRST IN FIRST OUT NOT FIRST IN LAST OUT SO IT'S 
+        //     //ALWAYS oing to have the same peek value!
+        //     //System.out.print(" : " + mySong.peek().getName()); this alwasy prints the first in
+        //     Note noteToAdd = myChain.getNext(mySong.peek());
+        //     //System.out.print(noteToAdd.getName());
+        //     mySong.offer(noteToAdd);
+        //     //System.out.println(noteToAdd);
+        // }
         
-    //     for(int i = 0; i < mySong.size(); i +=1)
-    //     {
-    //         //System.out.print(" " + mySong.peek().getName());
-    //         //System.out.println(" " + mySong.peek().getDuration());
-    //         mySong.offer(mySong.poll());
-    //     }
+        // for(int i = 0; i < mySong.size(); i +=1)
+        // {
+        //     //System.out.print(" " + mySong.peek().getName());
+        //     //System.out.println(" " + mySong.peek().getDuration());
+        //     mySong.offer(mySong.poll());
+        // }
 
-    //     output.makeSong(mySong, "mySickTitle");
+        // output.makeSong(mySong, "mySickTitle");
     // }
 }

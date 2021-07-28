@@ -14,7 +14,7 @@ public class musicMain
         myFrame.setResizable(false);
         myFrame.add(myPanel);
         myFrame.pack();
-        
+        myFrame.setLocationRelativeTo(null);
 
         myFrame.setVisible(true);
     }
