@@ -17,7 +17,7 @@ public class MidiOut
             note += 1;
         }
     }
-public void makeSong(Queue<Note> mySong) 
+public void makeSong(Queue<Note> mySong, String SongName) 
 {
     System.out.println("midifile begin ");
 	try
@@ -106,7 +106,7 @@ public void makeSong(Queue<Note> mySong)
         t.add(me);
 
         //****  write the MIDI sequence to a MIDI file  ****
-        File f = new File("midifile.mid");
+        File f = new File(SongName + ".mid");
         MidiSystem.write(s,1,f);
         } //try
     catch(Exception e)

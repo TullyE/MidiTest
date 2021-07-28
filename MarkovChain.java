@@ -262,6 +262,6 @@ public class MarkovChain
             mySong.offer(mySong.poll());
         }
 
-        output.makeSong(mySong);
+        output.makeSong(mySong, "mySickTitle");
     }
 }

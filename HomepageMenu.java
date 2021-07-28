@@ -45,7 +45,9 @@ public class HomepageMenu extends JPanel implements ActionListener
     private ImageIcon im3 = new ImageIcon(Toolkit.getDefaultToolkit().createImage("StopPlayingSound.png"));
     private JButton StopSound = new JButton(im3);
 
-
+    //File Name input text box
+    private JTextField FileNameInputField = new JTextField(20);
+    private JTextArea FileNameInputArea = new JTextArea(5, 20);
     public HomepageMenu()
     {
         this.setLayout(new BorderLayout());
@@ -61,23 +63,31 @@ public class HomepageMenu extends JPanel implements ActionListener
         midiFiles = new JComboBox(midiFileNames);
         midiFiles.setSelectedItem(midiFileNames.length-1);
 
+        
+        FileNameInputArea.setEditable(false);
+        
+
         PlayNewSong.addActionListener(new PlayNewSongAction());
         PlayOriginalSong.addActionListener(new PlayOriginalSongAction());
         SaveNewSong.addActionListener(new SaveNewSongAction());
         midiFiles.addActionListener(new JComboBoxAction());
         StopSound.addActionListener(new StopSoundAction());
+        FileNameInputField.addActionListener(new FileNameInputAction());
 
         PlayNewSong.setBounds(425,425, 150, 150);
         PlayOriginalSong.setBounds(200,425, 150, 150);
         SaveNewSong.setBounds(650, 425, 150, 150);
         midiFiles.setBounds(200, 575, 150, 25);
         StopSound.setBounds(775, 780, 75, 75);
+        FileNameInputField.setBounds(650, 575, 150, 25);
         
         this.add(PlayNewSong); 
         this.add(PlayOriginalSong);
         this.add(SaveNewSong);
         this.add(midiFiles);
         this.add(StopSound);
+        this.add(FileNameInputArea);
+        this.add(FileNameInputField);
         
     }
 
@@ -96,6 +106,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         public void actionPerformed(ActionEvent e)
         {
             System.out.println("PlayNewSong");
+
         }
     }
 
@@ -105,6 +116,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         public void actionPerformed(ActionEvent e)
         {
             System.out.println("PlayOriginalSong");
+            //https://riptutorial.com/java/example/621/play-a-midi-file
             try
             {
                 if(sequencer != null)
@@ -134,6 +146,7 @@ public class HomepageMenu extends JPanel implements ActionListener
         @Override
         public void actionPerformed(ActionEvent e)
         {
+            System.out.print(FileNameInputField.getText());
             System.out.println("SaveNewSong");
         }
     }
@@ -161,6 +174,17 @@ public class HomepageMenu extends JPanel implements ActionListener
         }
     }
 
+    private class FileNameInputAction implements ActionListener
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            String text = FileNameInputField.getText();
+            FileNameInputArea.append(text + "\n");
+            FileNameInputArea.selectAll();
+            FileNameInputArea.setCaretPosition(FileNameInputArea.getDocument().getLength());
+        }
+    }
     @Override
     public void actionPerformed(ActionEvent e)
     {
