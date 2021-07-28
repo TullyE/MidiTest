@@ -24,11 +24,8 @@ public class MidiReader
         //https://www.geeksforgeeks.org/java-midi/
         //Track: It is a sequence of Midi events.
         //Sequence: It is a data structure containing multiple tracks and timing information.The sequencer takes in a sequence and plays it.  
-        int trackNumber = 0;
         for(Track track : sequence.getTracks())
         {
-            
-            trackNumber++;
             //System.out.println("Track " + trackNumber + ": size = " + track.size());
             //System.out.println();
             long prevTick = 0L;
@@ -50,7 +47,8 @@ public class MidiReader
                         int octave = (key / 12)-1;
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
-                        int velocity = sm.getData2();
+                        //int velocity = sm.getData2();
+                        
                         //System.out.println(octave);
                         // if(mySong.size() > 0)
                         // {

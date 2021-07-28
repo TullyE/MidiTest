@@ -5,8 +5,6 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
-import javax.swing.JFrame;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +15,6 @@ import java.util.Queue;
 public class HomepageMenu extends JPanel implements ActionListener
 {
     private String selectedMidiFile;
-
-    private boolean selectFileError = false;
 
     boolean transition = false;
 
