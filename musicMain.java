@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.Dimension;
 
-public class main
+public class musicMain
 {
     
     public static void main(String[] args)
