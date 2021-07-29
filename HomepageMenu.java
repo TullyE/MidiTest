@@ -4,6 +4,7 @@ has the graphics code for the Homepage
 Tully Eva
 07/29/2021
 */
+import java.lang.System;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -23,6 +24,8 @@ import java.util.Queue;
 
 public class HomepageMenu extends JPanel implements ActionListener
 {
+    private String osName = System.getProperty("os.name");
+    private String splitAt;
     private String selectedMidiFile;
     //https://stackoverflow.com/questions/2544759/java-reading-images-and-displaying-as-an-imageicon
     //Play New Song Button
@@ -70,6 +73,14 @@ public class HomepageMenu extends JPanel implements ActionListener
      */
     public HomepageMenu()
     {
+        if (osName.contains("Windows"))
+        {
+            splitAt = "\\";
+        }
+        else
+        {
+            splitAt = "/";
+        }
         //initiate the screen 
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(1000, 1000));
@@ -343,17 +354,14 @@ public class HomepageMenu extends JPanel implements ActionListener
      */
     public String getFileName(String name)
     {
-        if(name.indexOf("\\") == -1 || name.indexOf("/") == -1)
+
+        if(name.indexOf(splitAt) == -1)
         {
             return name;
         }
-        else if(name.indexOf("\\") == -1)
-        {
-            return getFileName(name.substring(name.indexOf("\\") + 1, name.length()));
-        }
         else
         {
-            return getFileName(name.substring(name.indexOf("/") + 1, name.length()));
+            return getFileName(name.substring(name.indexOf(splitAt) + 1, name.length()));
         }
     }
 }
