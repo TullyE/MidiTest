@@ -343,13 +343,17 @@ public class HomepageMenu extends JPanel implements ActionListener
      */
     public String getFileName(String name)
     {
-        if(name.indexOf("\\") == -1)
+        if(name.indexOf("\\") == -1 || name.indexOf("/") == -1)
         {
             return name;
         }
-        else
+        else if(name.indexOf("\\") == -1)
         {
             return getFileName(name.substring(name.indexOf("\\") + 1, name.length()));
+        }
+        else
+        {
+            return getFileName(name.substring(name.indexOf("/") + 1, name.length()));
         }
     }
 }

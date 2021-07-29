@@ -221,7 +221,7 @@ public class MarkovChain
             theString = theString + "\n\n" + keyLetters[row];
             for(int col = 0; col < keys; col += 1)
             {
-                theString = theString + "\n  " + keyLetters[col] + " " + probibs[row][col] * 100 + "%";
+                theString = theString + "\n  " + keyLetters[col] + " " + String.format("%.2f", probibs[row][col] * 100) + "%";
             }
         }
         theString += "\n////////////////////////////////////////////////////////////////////////////////////////////////////";
@@ -233,7 +233,7 @@ public class MarkovChain
             theString = theString + "\n\n" + keyLetters[row];
             for(int col = 0; col < this.probibsDur[0].length; col += 1)
             {
-                theString = theString + "\n  " + this._durArray[col] + " " + probibsDur[row][col] * 100 + "%";
+                theString = theString + "\n  " + this._durArray[col] + " " + String.format("%.2f", probibsDur[row][col] * 100) + "%";
             }
         }
         return theString;
