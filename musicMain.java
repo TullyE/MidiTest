@@ -1,9 +1,19 @@
+/**
+musicMain.java
+File to run
+Tully Eva
+07/29/2021
+*/
 import javax.swing.*;
 import java.awt.Dimension;
 
 public class musicMain
 {
-    
+    /**
+     * initiate the Frame
+     * and create a HomepageMenu panel
+     * @param args
+     */
     public static void main(String[] args)
     {
         HomepageMenu myPanel = new HomepageMenu();

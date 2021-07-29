@@ -1,7 +1,11 @@
+/**
+MarkovChain.java
+creates a markov chain based on a song passed in
+Tully Eva
+07/29/2021
+*/
 import java.util.HashMap;
 import java.util.HashSet;
-// import java.util.LinkedList;
-// import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.ArrayList;
@@ -11,54 +15,50 @@ public class MarkovChain
 {
     //Used by note, dur
     private HashMap<String, Integer> numToKey = new HashMap<>();
-
     //Used by note, dur
     private HashMap<String, Integer> occurences = new HashMap<>();
-
     //Used by note, dur for "for" loops
     private int keys = 12;
-
     //defined in dur
     private double[][] probibsDur;
-
     //defined in note
     private double[][] probibs = new double[keys][keys];
-    
     //used in note
     private String[] keyLetters = new String[]{"c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"};
-    
     //used in generating next dur... used to get the actual duration
     private Long[] _durArray;
 
+    /**
+     * defalut constructor for markov chain
+     * @param baseSong
+     */
     public MarkovChain(ArrayList<Note> baseSong)
     {
         noteChain(baseSong);
         lengthChain(baseSong);
     }
-
+    /**
+     * create the markov chain for durations
+     * @param song
+     */
     public void lengthChain(ArrayList<Note> song)
     {
-        //create an array of the possible Durations
         Set<Long> durs = new HashSet<Long>();
         for(int i = 0; i < song.size(); i += 1)
         {
             durs.add(song.get(i).getDuration());
-            //System.out.print(song.get(i).getName());
-            //System.out.println(song.get(i).getDuration());
         }
         Long[] durArray = durs.toArray(new Long[durs.size()]);
         Arrays.sort(durArray);
         this._durArray = durArray;
-        //done creating that array of possible Durations
 
-        //numToKey is already Init in NoteChain
-        //Occurences is also already Init in NoteChain
-        //occurencs is the same for both
-        //numToKey is ALWAYS going to be the same
+        //numToKey is already Init in NoteChain,    Occurences is also already Init in NoteChain
+        //occurencs is the same for both,   numToKey is ALWAYS going to be the same
 
         //init the 2D array of notes/lengths
         this.probibsDur = new double[keys][durArray.length];
         // go from a duration to an index pos
+
         // the pos being for proibsDur
         HashMap<Long, Integer> durToIndexPos = new HashMap<>();
 
@@ -76,11 +76,10 @@ public class MarkovChain
                 probibsDur[row][col] = 0;
             }
         }
-        //loop through all the notes in the song and add the duration to the correct spot
 
+        //loop through all the notes in the song and add the duration to the correct spot
         for(Note notes : song)
         {
-            // probibs[numToKey.get(note)][numToKey.get(prevNote)] += 1;
             probibsDur[numToKey.get(notes.getName())][durToIndexPos.get(notes.getDuration())] += 1;
         }
         for(int i = 0; i < keys; i += 1)
@@ -92,12 +91,13 @@ public class MarkovChain
             PercentagizeRow(probibsDur[i], occurences.get(keyLetters[i]));
         }
     }
-
+    /**
+     * create the markov chain for notes
+     * @param song
+     */
     public void noteChain(ArrayList<Note> song)
     {
-        //letters is a string[] of all the notes in the song
         String[] letters = new String[song.size()];
-
         for(int i = 0; i < song.size(); i += 1)
         {
             //puts the name of the note in the correct position in the string[] letters
@@ -105,8 +105,7 @@ public class MarkovChain
         }
 
         //make the hasmaps have the k, v pair of k = the notes in keyLetters
-        //keLetters is equal to {"c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b", "rest"}
-        //LINE 25
+        //keyLetters is equal to {"c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b", "rest"}
         for(int i = 0; i < keys; i += 1)
         {
             //v is the index position of the letter in the list of notes or letters
@@ -117,7 +116,7 @@ public class MarkovChain
             occurences.put(keyLetters[i], 0);
         }
 
-        //for every key create an array with the 0th index being the first note in keyLetters and set the dfalut chance to 0
+        //for every key create an array with the 0th index being the first note in keyLetters
         for(int row = 0; row < keys; row += 1)
         {
             for(int col = 0; col < keys; col += 1)
@@ -137,7 +136,6 @@ public class MarkovChain
             }
             else
             {
-                // probibs[numToKey.get(note)][numToKey.get(prevNote)] += 1;
                 probibs[numToKey.get(prevNote)][numToKey.get(note)] += 1;
                 occurences.put(note, occurences.get(note) + 1);
                 prevNote = note;
@@ -147,7 +145,6 @@ public class MarkovChain
                 }
             }
             noteNum += 1;
-
         }
         for(int i = 0; i < keys; i += 1)
         {
@@ -158,14 +155,23 @@ public class MarkovChain
             PercentagizeRow(probibs[i], occurences.get(keyLetters[i]));
         }
     }
-
-     public void PercentagizeRow(double[] list, double divide)
+    /**
+     * divide everything in the list by divide
+     * @param list
+     * @param divide
+     */
+    public void PercentagizeRow(double[] list, double divide)
     {
         for(int i = 0; i < list.length; i +=1) 
         {
             list[i] = list[i]/divide;
         }
     }
+    /**
+     * use the chances in the markov chains to get the next note first get teh note and then use that generated note to generate the duration
+     * @param Start
+     * @return
+     */
     public Note getNext(Note Start)
     {
         Note finalNote = new Note("f", 120, 4);
@@ -202,69 +208,49 @@ public class MarkovChain
         }
         return finalNote;
     }
+    /**
+     * multiplied by 100 to make it be percentages
+     * @return a nicely formated string of the markov chains
+     */
     public String toString()
     {
-        String theString = "";
+        String theString = "NOTES";
         //NOTES
         for(int row = 0; row < keys; row += 1)
         {
             theString = theString + "\n\n" + keyLetters[row];
             for(int col = 0; col < keys; col += 1)
             {
-                theString = theString + "\n  " + keyLetters[col] + " " + probibs[row][col] + "%";
+                theString = theString + "\n  " + keyLetters[col] + " " + probibs[row][col] * 100 + "%";
             }
         }
-
+        theString += "\n////////////////////////////////////////////////////////////////////////////////////////////////////";
+        theString += "\n////////////////////////////////////////////////////////////////////////////////////////////////////";
+        theString += "\nDURATION:";
         //DURS
-        // for(int row = 0; row < keys; row += 1)
-        // {
-        //     theString = theString + "\n\n" + keyLetters[row];
-        //     for(int col = 0; col < this.probibsDur[0].length; col += 1)
-        //     {
-        //         theString = theString + "\n  " + this._durArray[col] + " " + probibsDur[row][col] + "%";
-        //     }
-        // }
+        for(int row = 0; row < keys; row += 1)
+        {
+            theString = theString + "\n\n" + keyLetters[row];
+            for(int col = 0; col < this.probibsDur[0].length; col += 1)
+            {
+                theString = theString + "\n  " + this._durArray[col] + " " + probibsDur[row][col] * 100 + "%";
+            }
+        }
         return theString;
     }
-    
-    // public static void main(String[] args) throws Exception
-    // {
-    //     //int Reader
-    //     MidiReader myReader = new MidiReader();
-    //     //make a noteArray of the notes from the song
-    //     ArrayList<Note> originalSong = myReader.getNewSong("FurElise.mid");
-    //     //https://musiclab.chromeexperiments.com/Song-Maker/song/5176723736363008
-    //     // System.out.println(myString);
-    //     //init Midi Maker
-    //     MidiOut output = new MidiOut();
+    /**
+     * good example of the markov chain good for explaining
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception
+    {
+        MidiReader myReader = new MidiReader();
 
-    //     //Create the Queue for my new song
-    //     Queue<Note> mySong = new LinkedList<Note>();
-
-    //     //init the Markov chain
-    //     MarkovChain myChain = new MarkovChain(originalSong);
-
-    //     mySong.offer(originalSong.get(originalSong.size()-1));
-
-    //     System.out.println(myChain);
-        // for(int i = 0; i < 15; i += 1)
-        // {
-        //     //AHHAHAHAHHA STUPID IT'S A QUEUE SO IT'S FIRST IN FIRST OUT NOT FIRST IN LAST OUT SO IT'S 
-        //     //ALWAYS oing to have the same peek value!
-        //     //System.out.print(" : " + mySong.peek().getName()); this alwasy prints the first in
-        //     Note noteToAdd = myChain.getNext(mySong.peek());
-        //     //System.out.print(noteToAdd.getName());
-        //     mySong.offer(noteToAdd);
-        //     //System.out.println(noteToAdd);
-        // }
+        ArrayList<Note> originalSong = myReader.getNewSong("FurElise.mid");
         
-        // for(int i = 0; i < mySong.size(); i +=1)
-        // {
-        //     //System.out.print(" " + mySong.peek().getName());
-        //     //System.out.println(" " + mySong.peek().getDuration());
-        //     mySong.offer(mySong.poll());
-        // }
-
-        // output.makeSong(mySong, "mySickTitle");
-    // }
+        MarkovChain myChain = new MarkovChain(originalSong);
+        
+        System.out.println(myChain);
+    }
 }

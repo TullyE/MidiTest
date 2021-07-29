@@ -1,3 +1,9 @@
+/**
+MidiReader.java
+reads in a midi file and creates an array of notes
+Tully Eva
+07/29/2021
+*/
 import java.io.File;
 import java.util.ArrayList;
 import javax.sound.midi.MidiEvent;
@@ -12,22 +18,27 @@ public class MidiReader
     private int NOTE_ON = 0x90;
     private String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
+    /**
+     * defalut constructor for the MidiReader
+     */
     public MidiReader()
     {
         System.out.println("MidiReader Initialized!");
     }
-
+    /**
+     * convert a midi to an arraylist of notes
+     * https://stackoverflow.com/questions/3850688/reading-midi-files-in-java
+     * @param name
+     * @return ArrayList of notes
+     * @throws Exception
+     */
     public ArrayList<Note> getNewSong(String name) throws Exception
     {
+        //TULLY ADJUSTED ORIGINAL
         ArrayList<Note> mySong = new ArrayList<Note>();
         Sequence sequence = MidiSystem.getSequence(new File(name));
-        //https://www.geeksforgeeks.org/java-midi/
-        //Track: It is a sequence of Midi events.
-        //Sequence: It is a data structure containing multiple tracks and timing information.The sequencer takes in a sequence and plays it.  
         for(Track track : sequence.getTracks())
         {
-            //System.out.println("Track " + trackNumber + ": size = " + track.size());
-            //System.out.println();
             long prevTick = 0L;
             for (int i=0; i < track.size(); i++)
             { 
@@ -37,36 +48,15 @@ public class MidiReader
                 if (message instanceof ShortMessage)
                 {
                     ShortMessage sm = (ShortMessage) message;
-                    //System.out.print("Channel: " + sm.getChannel() + " ");
                     if (sm.getCommand() == NOTE_ON)
                     {
-                        
                         long Duration = event.getTick() - prevTick;
-                        //System.out.println(event.getTick() + "-" + prevTick + "=" + Duration);
                         int key = sm.getData1();
                         int octave = (key / 12)-1;
                         int note = key % 12;
                         String noteName = NOTE_NAMES[note];
-                        //int velocity = sm.getData2();
-                        
-                        //System.out.println(octave);
-                        // if(mySong.size() > 0)
-                        // {
-                        //     Note last = mySong.get(mySong.size()-1);
-                        //     last.setDuration(Duration - last.getDuration());
-                        //     mySong.remove(mySong.get(mySong.size()-1));
-                        //     mySong.add(last);
-                        //     mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
-                        //     System.out.println(Duration-last.getDuration());
-                        // }
-                        // else
-                        // {
                         mySong.add(new Note(noteName.toLowerCase(), Duration, octave));
-                        //System.out.println(Duration);
-                        //}
                         prevTick = event.getTick();
-                        //System.out.println(prevTick);
-                        //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     }
                 }
             }
